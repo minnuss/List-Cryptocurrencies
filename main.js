@@ -23,7 +23,7 @@ form.addEventListener('submit', function (e) {
 )
 
 // Getting the data from the server
-async function getData(numOfEntries) {
+async function getData(numOfEntries = 5) {
     let apiKey = `ffe55b48bfca4e9cbc93587fbfa0a7d718637fc7d4a0219f48238db66cffd642`;
 
     let url = `https://min-api.cryptocompare.com/data/top/mktcapfull?limit=${numOfEntries}&tsym=USD&api_key=${apiKey}`;
