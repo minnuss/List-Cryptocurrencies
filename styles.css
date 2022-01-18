@@ -1,0 +1,21 @@
+#myInput {
+  margin: 20px 0;
+}
+
+#table {
+  width: 100%;
+  border: 1px solid #ccc;
+}
+
+#table tr {
+  text-align: center;
+  /* border: 1px solid #ccc; */
+}
+
+#table tr th {
+  cursor: pointer;
+}
+
+#table tbody tr:nth-child(odd) {
+  background: #eee;
+}
