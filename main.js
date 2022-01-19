@@ -178,6 +178,11 @@ function callSort() {
         // Sort each row
         const sortedRows = rows.sort((a, b) => {
 
+            // Disable sort on picture column
+            if (column === 1) {
+                return
+            }
+
             let aColText = parseInt(a.querySelector(`td:nth-child(${column + 1})`).textContent.trim().replace(/[,.$%]/g, ""));
             let bColText = parseInt(b.querySelector(`td:nth-child(${column + 1})`).textContent.trim().replace(/[,.$%]/g, ""));
             // console.log(aColText, bColText);
@@ -208,6 +213,11 @@ function callSort() {
             const tableElement = headerCell.parentElement.parentElement.parentElement;
             const headerIndex = Array.prototype.indexOf.call(headerCell.parentElement.children, headerCell);
             const currentIsAscending = headerCell.classList.contains("th-sort-asc");
+
+            // Disable sort on picture column
+            if (headerIndex === 1) {
+                return
+            }
 
             sortTableByColumn(tableElement, headerIndex, !currentIsAscending);
         });
