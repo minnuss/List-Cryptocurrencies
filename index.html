@@ -10,23 +10,31 @@
 </head>
 
 <body>
-    <form id="form">
+    <form id="form" class="sortable">
         <input type="text" id="num-coins" placeholder="Number of coins">
         <button>Ok</button>
     </form>
+
     <input type="text" id="myInput" placeholder="Search by coin name">
-    <table id='table'>
-        <tr>
-            <th>#</th>
-            <th>Pic</th>
-            <th>Coin</th>
-            <th>Symbol</th>
-            <th>Price</th>
-            <th>1h</th>
-            <th>24h</th>
-            <th>24h Volume</th>
-            <th>Market Cap</th>
-        </tr>
+
+    <table id='table' class="table-sortable">
+        <thead>
+            <tr>
+                <th>#</th>
+                <th>Pic</th>
+                <th>Coin</th>
+                <th>Symbol</th>
+                <th>Price</th>
+                <th>1h</th>
+                <th>24h</th>
+                <th>24h Volume</th>
+                <th>Market Cap</th>
+            </tr>
+        </thead>
+        <tbody id="tbody">
+
+        </tbody>
+
     </table>
 
     <script src="main.js"></script>

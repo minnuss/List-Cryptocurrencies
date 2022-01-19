@@ -1,24 +1,31 @@
-// EventListener for search input field
+// EventListener for number of coins input field
 let form = document.getElementById('form');
 let inputNumEntries = document.getElementById("num-coins");
 form.addEventListener('submit', function (e) {
     e.preventDefault();
     let table = document.querySelector('table');
     table.innerHTML = `
-    <tr>
-            <th>#</th>
-            <th>Pic</th>
-            <th>Coin</th>
-            <th>Symbol</th>
-            <th>Price</th>
-            <th>1h</th>
-            <th>24h</th>
-            <th>24h Volume</th>
-            <th>Market Cap</th>
-        </tr>
+    <thead>
+            <tr>
+                <th>#</th>
+                <th>Pic</th>
+                <th>Coin</th>
+                <th>Symbol</th>
+                <th>Price</th>
+                <th>1h</th>
+                <th>24h</th>
+                <th>24h Volume</th>
+                <th>Market Cap</th>
+            </tr>
+        </thead>
+        <tbody id="tbody">
+
+        </tbody>
     `;
     let numOfEntries = inputNumEntries.value;
     getData(numOfEntries);
+
+    callSort();
 }
 )
 
@@ -38,9 +45,9 @@ getData()
 
 // Creating table and populating it with data
 function populateTable(data) {
-    // console.log(data);
+    console.log(data);
     let table = document.querySelector('table');
-    let tbody = document.createElement('tbody');
+    let tbody = document.getElementById('tbody');
     table.appendChild(tbody);
 
     for (let i = 0; i < data.Data.length; i++) {
@@ -73,7 +80,10 @@ function populateTable(data) {
         if (data.Data[i].RAW === undefined) {
             td.textContent = 'N/A';
         } else {
-            td.textContent = '$' + (data.Data[i].RAW.USD.PRICE).toLocaleString();
+            td.textContent = (data.Data[i].RAW.USD.PRICE).toLocaleString(undefined, {
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2
+            }) + '$';
         }
         tr.appendChild(td);
 
@@ -95,17 +105,15 @@ function populateTable(data) {
         }
         tr.appendChild(td);
 
-        // create the 7 days change cell
-        // td = document.createElement('td');
-        // td.textContent = data.Data[i].DISPLAY.USD.CHANGEPCT7DAY;
-        // tr.appendChild(td);
-
         // create the 24 volume
         td = document.createElement('td');
         if (data.Data[i].RAW === undefined) {
             td.textContent = 'N/A';
         } else {
-            td.textContent = data.Data[i].DISPLAY.USD.VOLUME24HOURTO;
+            td.textContent = data.Data[i].RAW.USD.VOLUME24HOURTO.toLocaleString(undefined, {
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2
+            }) + '$';
         }
         tr.appendChild(td);
 
@@ -114,81 +122,13 @@ function populateTable(data) {
         if (data.Data[i].RAW === undefined) {
             td.textContent = 'N/A';
         } else {
-            td.textContent = '$ ' + (data.Data[i].RAW.USD.MKTCAP).toLocaleString();
+            td.textContent = (data.Data[i].RAW.USD.MKTCAP).toLocaleString(undefined, {
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2
+            }) + '$ ';
         }
         tr.appendChild(td);
     }
-}
-
-// Function for sorting table by column 
-function sortTable(n) {
-    let table, rows, switching, i, x, y, shouldSwitch, dir, switchcount = 0;
-    table = document.getElementById("table");
-    switching = true;
-    // Set the sorting direction to ascending:
-    dir = "asc";
-    /* Make a loop that will continue until
-    no switching has been done: */
-    while (switching) {
-        // Start by saying: no switching is done:
-        switching = false;
-        rows = table.rows;
-        /* Loop through all table rows (except the
-        first, which contains table headers): */
-        for (i = 1; i < (rows.length - 1); i++) {
-            // Start by saying there should be no switching:
-            shouldSwitch = false;
-            /* Get the two elements you want to compare,
-            one from current row and one from the next: */
-            x = rows[i].getElementsByTagName("TD")[n];
-            // console.log(x)
-            if (x == undefined) {
-                x = rows[i].getElementsByTagName("TD")[n - 1];
-            }
-            y = rows[i + 1].getElementsByTagName("TD")[n];
-            if (y == undefined) {
-                y = rows[i + 1].getElementsByTagName("TD")[n - 1];
-            }
-
-            /* Check if the two rows should switch place,
-            based on the direction, asc or desc: */
-            if (dir == "asc") {
-                if (x.innerHTML.toLowerCase() > y.innerHTML.toLowerCase()) {
-                    // If so, mark as a switch and break the loop:
-                    shouldSwitch = true;
-                    break;
-                }
-            } else if (dir == "desc") {
-                if (x.innerHTML.toLowerCase() < y.innerHTML.toLowerCase()) {
-                    // If so, mark as a switch and break the loop:
-                    shouldSwitch = true;
-                    break;
-                }
-            }
-        }
-        if (shouldSwitch) {
-            /* If a switch has been marked, make the switch
-            and mark that a switch has been done: */
-            rows[i].parentNode.insertBefore(rows[i + 1], rows[i]);
-            switching = true;
-            // Each time a switch is done, increase this count by 1:
-            switchcount++;
-        } else {
-            /* If no switching has been done AND the direction is "asc", set the direction to "desc" and run the while loop again. */
-            if (switchcount == 0 && dir == "asc") {
-                dir = "desc";
-                switching = true;
-            }
-        }
-    }
-}
-
-// Event listener for the table header
-let th = document.querySelectorAll('th');
-for (let i = 0; i < th.length; i++) {
-    th[i].addEventListener('click', function () {
-        sortTable(i);
-    })
 }
 
 // Search function
@@ -202,7 +142,8 @@ function searchTable(n) {
         td = tr[i].getElementsByTagName("td")[n];
         if (td) {
             txtValue = td.textContent || td.innerText;
-            if (txtValue.toUpperCase().indexOf(filter) > -1) {
+            // if (txtValue.toUpperCase().indexOf(filter) > -1) 
+            if (txtValue.toUpperCase().includes(filter)) {
                 tr[i].style.display = "";
             } else {
                 tr[i].style.display = "none";
@@ -219,8 +160,58 @@ inp.addEventListener('keyup', function () {
 )
 
 
+/**
+ * Sorts a HTML table.
+ * 
+ * @param {HTMLTableElement} table The table to sort
+ * @param {number} column The index of the column to sort
+ * @param {boolean} asc Determines if the sorting will be in ascending
+ */
+function callSort() {
 
+    function sortTableByColumn(table, column, asc = true) {
+        const dirModifier = asc ? 1 : -1;
+        const tBody = table.tBodies[0];
+        const rows = Array.from(tBody.querySelectorAll("tr"));
+        // console.log(column);
 
+        // Sort each row
+        const sortedRows = rows.sort((a, b) => {
 
+            let aColText = parseInt(a.querySelector(`td:nth-child(${column + 1})`).textContent.trim().replace(/[,.$%]/g, ""));
+            let bColText = parseInt(b.querySelector(`td:nth-child(${column + 1})`).textContent.trim().replace(/[,.$%]/g, ""));
+            console.log(aColText, bColText);
+            if (column === 2 || column === 3) {
+                aColText = a.querySelector(`td:nth-child(${column + 1})`).textContent.trim();
+                bColText = b.querySelector(`td:nth-child(${column + 1})`).textContent.trim();
+            }
+            return (aColText > bColText ? 1 : -1) * dirModifier;
 
+        });
 
+        // Remove all existing TRs from the table
+        while (tBody.firstChild) {
+            tBody.removeChild(tBody.firstChild);
+        }
+
+        // Re-add the newly sorted rows
+        tBody.append(...sortedRows);
+
+        // Remember how the column is currently sorted
+        table.querySelectorAll("th").forEach(th => th.classList.remove("th-sort-asc", "th-sort-desc"));
+        table.querySelector(`th:nth-child(${column + 1})`).classList.toggle("th-sort-asc", asc);
+        table.querySelector(`th:nth-child(${column + 1})`).classList.toggle("th-sort-desc", !asc);
+    }
+
+    document.querySelectorAll(".table-sortable th").forEach(headerCell => {
+        headerCell.addEventListener("click", () => {
+            const tableElement = headerCell.parentElement.parentElement.parentElement;
+            const headerIndex = Array.prototype.indexOf.call(headerCell.parentElement.children, headerCell);
+            const currentIsAscending = headerCell.classList.contains("th-sort-asc");
+
+            sortTableByColumn(tableElement, headerIndex, !currentIsAscending);
+        });
+    });
+}
+
+callSort();
