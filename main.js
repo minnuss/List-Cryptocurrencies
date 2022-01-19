@@ -180,7 +180,7 @@ function callSort() {
 
             let aColText = parseInt(a.querySelector(`td:nth-child(${column + 1})`).textContent.trim().replace(/[,.$%]/g, ""));
             let bColText = parseInt(b.querySelector(`td:nth-child(${column + 1})`).textContent.trim().replace(/[,.$%]/g, ""));
-            console.log(aColText, bColText);
+            // console.log(aColText, bColText);
             if (column === 2 || column === 3) {
                 aColText = a.querySelector(`td:nth-child(${column + 1})`).textContent.trim();
                 bColText = b.querySelector(`td:nth-child(${column + 1})`).textContent.trim();
