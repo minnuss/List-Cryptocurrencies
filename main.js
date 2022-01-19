@@ -45,7 +45,7 @@ getData()
 
 // Creating table and populating it with data
 function populateTable(data) {
-    console.log(data);
+    // console.log(data);
     let table = document.querySelector('table');
     let tbody = document.getElementById('tbody');
     table.appendChild(tbody);
